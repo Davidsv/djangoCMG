@@ -11,11 +11,19 @@ from screen.models import infochannel, message
 def info(request, infochannel_id):
     template = get_template('infochannel.html')
     kanalen =  infochannel.objects.get(id=infochannel_id)
-    #TODO her må beskjedene samles til en string som kan settes inn i page_body
+
+    beskjeder = []
+    for m in message.objects.get(channel=infochannel_id) :
+        beskjeder.append(m)
+
+    #prøv å legge til beskjeder i dictionaryen som sendes til Context
+
     variables = Context({
         'head_title': u"Dette er infokanal %s." % kanalen.name,
         'page_title': u"Velkommen til infosiden med id %s." % kanalen.id,
-        'page_body': u"Dette er beskjedene: %s" % message.objects.get(channel=infochannel_id).headline
+
+
+        'javascripttest' : message.objects.get(channel=infochannel_id).headline
     })
     output = template.render(variables)
     return HttpResponse(output)

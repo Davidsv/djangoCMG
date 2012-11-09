@@ -1,7 +1,7 @@
 # Django settings for djangoCMG project.
 
 # Hack to get syncdb to work in PyCharm
-import os; os.environ['LANG'] = 'en_US.UTF-8'
+#import os; os.environ['LANG'] = 'en_US.UTF-8'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/Users/sikander/Dropbox/Alexander/Programmering/Prosjekter/django-CMG/django_CMG/db.sql',                      # Or path to database file if using sqlite3.
+        'NAME': 'C:/GitHub/djangoCMG/django_CMG/db.sql',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -100,12 +100,12 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
 
-ROOT_URLCONF = 'djangoCMG.urls'
+ROOT_URLCONF = 'django_CMG.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'djangoCMG.wsgi.application'
+#WSGI_APPLICATION = 'djangoCMG.wsgi.application'
 
-TEMPLATE_DIRS = ('/Users/sikander/Dropbox/Alexander/Programmering/Prosjekter/django-CMG/django_CMG/templates',)
+TEMPLATE_DIRS = ( 'C:/GitHub/djangoCMG/django_CMG/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
