@@ -18,6 +18,8 @@ def info(request, infochannel_id):
 
     #prøv å legge til beskjeder i dictionaryen som sendes til Context
 
+    #ny kommentar
+
     variables = Context({
         'head_title': u"Dette er infokanal %s." % kanalen.name,
         'page_title': u"Velkommen til infosiden med id %s." % kanalen.id,
