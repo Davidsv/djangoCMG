@@ -16,5 +16,7 @@ urlpatterns = patterns('',
 
     url(r'^thedate/', 'screen.views.current_datetime'),
 
-    url(r'^kanal/(?P<infochannel_id>\d)', 'screen.views.info')
+    url(r'^kanal/(?P<infochannel_id>\d)', 'screen.views.info'),
+
+    url(r'^checkmessageexists/$', 'screen.views.checkmessageexists')
 )

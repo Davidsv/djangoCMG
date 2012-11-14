@@ -17,3 +17,4 @@ class message(models.Model):
     headline = models.CharField(max_length=64)
     text = models.TextField()
     channel = models.ForeignKey('infochannel')
+    active = models.BooleanField()

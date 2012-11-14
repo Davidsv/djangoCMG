@@ -1,3 +1,4 @@
+<!--
 <script type="text/javascript" >
     function test() {
 
@@ -12,7 +13,7 @@
 
     window.onload = test;
 </script>
-
+-->
 <html>
 <head>
     <title>
@@ -21,6 +22,46 @@
 </head>
 <body>
 <h1>{{ page_title }}</h1>
+<div id="theMessage">
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            type:'POST',
+            url:'/checkmessageexists/',
+            data : { channel: "{{ channel_id }}", message: "1" }
+            ,success: function(){ alert("success"); }});
+        });
 
+        /*
+        $.post("test.php", { name: "John", time: "2pm" },
+           function(data) {
+             alert("Data Loaded: " + data);
+           });
+        */
+
+        /*
+        $('#submit').click( function(e){
+            e.preventDefault();
+            $(this).attr("disabled");
+            $(this).hide();
+            $.ajax({
+                type:'POST',
+                url:'/postdeneme/',
+                data : $("form").serialize(),
+                success: function(e){
+                    console.log("Tamamd?r");
+                    $("#submit").removeAttr("disabled");
+                    $('#statusInfo').fadeIn('slow').delay('5000').fadeOut('slow');
+                    $('#statusDetail').load('/sondurum/?v=' + Math.random()).fadeIn('slow');
+                    $('ul').append('<li>' + $("#mesaj").val() + '</li>');
+                    $("form")[0].reset();
+                    $("#submit").show();
+                }});
+        });
+        */
+
+</script>
 </body>
 </html>
