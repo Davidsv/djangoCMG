@@ -26,13 +26,54 @@
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 <script>
+    //will get a 403 forbidden error if this function is not here
+    //answer found here: http://stackoverflow.com/a/5107878
+    $.ajaxSetup({
+         beforeSend: function(xhr, settings) {
+             function getCookie(name) {
+                 var cookieValue = null;
+                 if (document.cookie && document.cookie != '') {
+                     var cookies = document.cookie.split(';');
+                     for (var i = 0; i < cookies.length; i++) {
+                         var cookie = jQuery.trim(cookies[i]);
+                         // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+             }
+             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                 // Only send the token to relative URLs i.e. locally.
+                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+             }
+         }
+    });
+
+    //runs when page is loaded
     $(document).ready(function() {
         $.ajax({
-            type:'POST',
-            url:'/checkmessageexists/',
-            data : { channel: "{{ channel_id }}", message: "1" }
-            ,success: function(){ alert("success"); }});
+            type:"POST",
+            url:"/checkmessageexists/",
+            data : {
+                'channel': '{{ channel_id }}',
+                'message': '1'
+            },
+            success: function(data){
+                /*if(data.isEqual("INGENTING"))
+                    $("#theMessage").append("<p>no message</p>");
+                else {*/
+                    $("#theMessage").append("<h1>returned</h1>");
+                    $("#theMessage").append("<h2>"+data+"</h2>");
+                //}
+
+                //$("#theMessage").remove();
+                //alert(data ['headline'] + " " + data['text']);
+            }
         });
+    });
 
         /*
         $.post("test.php", { name: "John", time: "2pm" },

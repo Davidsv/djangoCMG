@@ -3,6 +3,9 @@
 from django.http import HttpResponse
 import datetime
 
+
+import sys
+
 from django.template import Context
 from django.template.loader import get_template
 
@@ -15,27 +18,26 @@ from django.template import RequestContext
 #    #første lasting av en kanal. render selve infochannel templaten
 #    return render_to_response('infochannel.html', context_instance=RequestContext(request))
 
+#use this anywhere for printing stuff to console
+#print >>sys.stderr, 'checkpoint!'
+
 def checkmessageexists(request):
-    #kanalID = request.POST.get('channel')
-    #beskjedID = request.POST.get('message')
+    #beskjed = message.objects.get(channel=1, id=1)
 
-    #TODO http://stackoverflow.com/questions/6020928/how-to-get-post-data-in-django-1-3
+    kID = request.POST['channel']
+    bID = request.POST['message']
 
-    kanalID = request.POST['channel']
-    beskjedID = request.POST['message']
-    if beskjedID is None:
-            return HttpResponse('beskjed er none')
-    if kanalID is None:
-        return HttpResponse('kanal er none')
+    print >>sys.stderr, 'checkpoint!'
 
-    return HttpResponse('kanal:'+kanalID + ' beskjed:'+beskjedID)
-#    beskjed = message.objects.get(channel=kanalID)[beskjedID]
-#    if beskjed is None :
-#        return HttpResponse('ingen beskjed')
-#       #return False
-#    else:
-#        return HttpResponse('fant beskjed')
-#        #return True
+    beskjed = message.objects.get(channel=kID, id=bID)
+
+    if beskjed is None :
+        return HttpResponse("INGENTING")
+    else:
+        return HttpResponse(beskjed.headline + " " + beskjed.text)
+        #return HttpResponse({'headline':beskjed.headline, 'text':beskjed.text})
+
+    #return render_to_response('infochannel.html', context_instance=RequestContext(request))
 
 def info(request, infochannel_id):
     template = get_template('infochannel.html')
