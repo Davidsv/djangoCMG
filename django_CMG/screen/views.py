@@ -3,16 +3,14 @@
 from django.http import HttpResponse
 import datetime
 
-
 import sys
+
+from django.db.models import Min, Max
 
 from django.template import Context
 from django.template.loader import get_template
 
 from screen.models import infochannel, message
-
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 
 #def info(request, infochannel_id):
 #    #første lasting av en kanal. render selve infochannel templaten
@@ -22,38 +20,77 @@ from django.template import RequestContext
 #print >>sys.stderr, 'checkpoint!'
 
 def checkmessageexists(request):
-    #beskjed = message.objects.get(channel=1, id=1)
+    #følgende funker ikke med beskjed 'cannot concatenate 'str' and 'RawQuerySet' objects'
+    #maxid = message.objects.raw('''SELECT MAX(id) as maxid FROM screen_message''')# WHERE channel_id = ' + kID)
+    #print >>sys.stderr, 'maxid: ' + maxid
 
     kID = request.POST['channel']
     bID = request.POST['message']
+    print >>sys.stderr, 'beskjed ID: ', bID
+    print >>sys.stderr, 'kanal ID: ', kID
 
-    print >>sys.stderr, 'checkpoint!'
+    if not _HasMessages(kID):
+        response = HttpResponse()
+        response['status'] = "EMPTY"
+        return response
 
-    beskjed = message.objects.get(channel=kID, id=bID)
+    if int(bID) == 0:
+        print >>sys.stderr, 'henter minBeskjedId...'
+        minID = message.objects.filter(channel=kID, active=True).aggregate(Min('id'))['id__min']
+        print >>sys.stderr, 'min beskjed ID: ', minID
+        bID = minID
 
-    if beskjed is None :
-        return HttpResponse("INGENTING")
+    maxBeskjedId = message.objects.filter(channel=kID, active=True).aggregate(Max('id'))['id__max']
+    print >>sys.stderr, 'maxBeskjedID: ', maxBeskjedId
+
+    print >>sys.stderr, 'henter beskjed...'
+    beskjed = None
+    while beskjed is None:
+        print >>sys.stderr, 'prøver beskjed id: ', bID
+        if int(bID) > maxBeskjedId:
+            response = HttpResponse()
+            response['status'] = "MAX"
+            return response
+        print >>sys.stderr, 'ikke over max id...'
+        try:
+            beskjed = message.objects.get(channel=kID, id=bID)
+            if not beskjed.active:
+                beskjed = None
+            else:
+                print >>sys.stderr, 'hentet beskjed id: ', bID
+        except message.DoesNotExist:
+            beskjed = None
+            bID = int(bID) + 1
+            print >>sys.stderr, 'fant ingen beskjed'
+
+    if beskjed is None or not beskjed.active:
+        return HttpResponse('')
     else:
-        return HttpResponse(beskjed.headline + " " + beskjed.text)
-        #return HttpResponse({'headline':beskjed.headline, 'text':beskjed.text})
+        #return HttpResponse(beskjed.headline + ' ' + beskjed.text)
+        response = HttpResponse()
+        response['status'] = "RETURNED"
+        response['headline'] = beskjed.headline
+        response['text'] = beskjed.text
+        response['returnedMsgID'] = beskjed.id
+        print >>sys.stderr, 'response none?: ', response is None
+        print >>sys.stderr, 'response: ', response['headline'], response['text']
+        return response
 
     #return render_to_response('infochannel.html', context_instance=RequestContext(request))
+
+def _HasMessages(infochannel_id):
+    antallAktiveBeskjeder = message.objects.filter(channel=infochannel_id, active=True).count()
+    print >>sys.stderr, 'antallBeskjeder: ', antallAktiveBeskjeder
+    return antallAktiveBeskjeder > 0
 
 def info(request, infochannel_id):
     template = get_template('infochannel.html')
     kanalen =  infochannel.objects.get(id=infochannel_id)
 
-    #beskjeder = []
-    #for m in message.objects.get(channel=infochannel_id) :
-    #    beskjeder.append(m)
-
-    #prøv å legge til beskjeder i dictionaryen som sendes til Context
-
     variables = Context({
         'head_title': u"Dette er infokanal %s." % kanalen.name,
         'page_title': u"Velkommen til infosiden med id %s." % kanalen.id,
         'channel_id': kanalen.id
-        #'javascripttest' : message.objects.get(channel=infochannel_id).headline
     })
     output = template.render(variables)
     return HttpResponse(output)

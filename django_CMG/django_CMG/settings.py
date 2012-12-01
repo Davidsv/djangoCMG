@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'C:/GitHub/djangoCMG/django_CMG/db.sql',                      # Or path to database file if using sqlite3.
+        'NAME': 'C:/Users/Developer3/Documents/PythonProjects/djangoCMG/django_CMG/db.sql',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -96,6 +96,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
@@ -105,7 +106,7 @@ ROOT_URLCONF = 'django_CMG.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 #WSGI_APPLICATION = 'djangoCMG.wsgi.application'
 
-TEMPLATE_DIRS = ( 'C:/GitHub/djangoCMG/django_CMG/templates',)
+TEMPLATE_DIRS = ( 'C:/Users/Developer3/Documents/PythonProjects/djangoCMG/django_CMG/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -120,7 +121,10 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'screen',
     #'south',
+    'debug_toolbar'
     )
+
+INTERNAL_IPS = ('127.0.0.1',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

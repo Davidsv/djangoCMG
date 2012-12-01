@@ -12,6 +12,8 @@ class format(models.Model):
 
 class infochannel(models.Model):
     name = models.CharField(max_length=64)
+    def __unicode__(self):
+        return self.name
 
 class message(models.Model):
     headline = models.CharField(max_length=64)

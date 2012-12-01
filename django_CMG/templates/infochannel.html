@@ -24,6 +24,9 @@
 <h1>{{ page_title }}</h1>
 <div id="theMessage">
 </div>
+<!-- TODO django.contrib.staticfiles
+<script type="text/javascript" src="{{ MEDIA_URL }}jquery-1.8.3.min.js"></script>
+-->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 <script>
     //will get a 403 forbidden error if this function is not here
@@ -54,26 +57,48 @@
 
     //runs when page is loaded
     $(document).ready(function() {
-        $.ajax({
-            type:"POST",
-            url:"/checkmessageexists/",
-            data : {
-                'channel': '{{ channel_id }}',
-                'message': '1'
-            },
-            success: function(data){
-                /*if(data.isEqual("INGENTING"))
-                    $("#theMessage").append("<p>no message</p>");
-                else {*/
-                    $("#theMessage").append("<h1>returned</h1>");
-                    $("#theMessage").append("<h2>"+data+"</h2>");
-                //}
-
-                //$("#theMessage").remove();
-                //alert(data ['headline'] + " " + data['text']);
-            }
-        });
+        getmessage(0);
     });
+
+    //get message by id from current channel, or display other info if it didn't exist
+    function getmessage(messageid) {
+        $("#theMessage").html("");
+        $.ajax({
+           type:"POST",
+           url:"/checkmessageexists/",
+           data : {
+               'channel': '{{ channel_id }}',
+               'message': messageid
+           },
+           complete: function(xhrObj, status){
+               //TODO test appendchild for å legge til templates
+               if(status == "error") {
+                   alert("error");
+                   alert(xhrObj.getAllResponseHeaders())
+               }
+               else {
+                   var status = xhrObj.getResponseHeader("status");
+                   if(status == "RETURNED") {
+                       $("#theMessage").append("<h1>message:</h1>");
+                       $("#theMessage").append("<h2>"+ xhrObj.getResponseHeader("headline") +"</h2>");
+                       $("#theMessage").append("<h3>"+ xhrObj.getResponseHeader("text") +"</h3>");
+                       //$("#theMessage").append('<button onclick="getmessage('+(parseInt(xhrObj.getResponseHeader("returnedMsgID")) + 1)+')">Next message</button>')
+                       setTimeout( function() {getmessage((parseInt(xhrObj.getResponseHeader("returnedMsgID")) + 1));}, 5000);
+                       //setTimeout( function() {getmessage((parseInt(xhrObj.getResponseHeader("returnedMsgID")) + 1));}, 1);
+                   }
+                   else if(status == "EMPTY") {
+                       $("#theMessage").append("<p>no messages in channel</p>");
+                   }
+                   else if(status == "MAX") {
+                       $("#theMessage").append("<p>message id overflow</p>");
+                       getmessage(0);
+                   }
+                   //$("#theMessage").append("<p>message requested does not exist or is not active</p>");
+                   //getmessage(messageid + 1)
+               }
+           }
+       });
+    }
 
         /*
         $.post("test.php", { name: "John", time: "2pm" },
