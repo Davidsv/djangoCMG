@@ -77,7 +77,7 @@ STATICFILES_FINDERS = (
     #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
     )
 
-# Make this unique, and don't share it with anybody.
+# Make this unique, and don't share it with anybody. TODO: generate a new key when set in production
 SECRET_KEY = 'b+=(_aw(*vitk^hw5fufsx%)3^_3-=cac3pb=_gz7j+^9v9_r*'
 
 # List of callables that know how to import templates from various sources.
@@ -100,8 +100,13 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
 
-# Cache to db
-CACHE_BACKEND = 'db://cache_table'
+# Cache to db, use "python manage.py createcachetable cache_table" to create cache_table in db
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+    }
+}
 
 ROOT_URLCONF = 'django_CMG.urls'
 
@@ -122,8 +127,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'screen',
-    #'south',
-    'debug_toolbar'
+    'south', # must be installed in Python
+    'debug_toolbar', # must be installed in Python
     )
 
 INTERNAL_IPS = ('127.0.0.1',)
