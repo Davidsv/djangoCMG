@@ -1,8 +1,5 @@
 # Django settings for djangoCMG project.
 
-# Hack to get syncdb to work in PyCharm
-#import os; os.environ['LANG'] = 'en_US.UTF-8'
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -15,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'C:/Users/Developer3/Documents/PythonProjects/djangoCMG/django_CMG/db.sql',                      # Or path to database file if using sqlite3.
+        'NAME': '/Users/sikander/Dropbox/Alexander/Programmering/Prosjekter/djangoCMG/django_CMG/db.sql',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -91,22 +88,27 @@ TEMPLATE_LOADERS = (
     )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware', # cache whole site
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware', # cache whole site
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
+
+# Cache to db
+CACHE_BACKEND = 'db://cache_table'
 
 ROOT_URLCONF = 'django_CMG.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 #WSGI_APPLICATION = 'djangoCMG.wsgi.application'
 
-TEMPLATE_DIRS = ( 'C:/Users/Developer3/Documents/PythonProjects/djangoCMG/django_CMG/templates',)
+TEMPLATE_DIRS = ( '/Users/sikander/Dropbox/Alexander/Programmering/Prosjekter/djangoCMG/django_CMG/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
